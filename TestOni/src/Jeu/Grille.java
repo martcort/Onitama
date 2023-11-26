@@ -14,14 +14,13 @@ public class Grille {
     Cellule[][] grille = new Cellule[taille][taille];
     
     
-
     // Contructeur de grille
     public Grille(){
  
     }
+   
     
     // Méthodes d'information
-    
     // Vérifie la non présence de pions bleus dans la grille
     boolean queRouge(){ 
         for(int i=0; i<taille; i++){
@@ -54,6 +53,9 @@ public class Grille {
         int yd = deplacement[0];
         String statutPion = grille[yp][xp].donneStatut();
         String statutDep = grille[yd][xd].donneStatut();
+        if( xd<0 || yd<0 || xd>4 || yd >4 ){ // Si le déplacement sort de la grille, il est illégal
+            return false;
+        }
         
         if("vide".equals(statutDep)){ // Un déplacement sur une case vide est forcément légal
             return true;
