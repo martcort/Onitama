@@ -28,4 +28,17 @@ public class Carte {
     int[] mouvement(int choix){
         return coups[choix-1];
     }
+    
+    @Override
+    public String toString(){
+        String txt = "";
+        txt =txt+nom;
+        for(int i=0;i<4;i++){
+            for(int j=0;j<2;j++){
+                txt = txt + coups[i][j];
+            }
+        }
+        return txt;
+        
+    }
 }

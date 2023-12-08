@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package Jeu;
 
 /**
@@ -9,12 +5,12 @@ package Jeu;
  * @author marti
  */
 public class TestOni {
-
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         // TODO code application logic here
-    }
-    
+        Partie partie = new Partie();
+        //System.out.println(partie.creerDeckTotal());
+        for(int i=0;i<128;i++){
+            System.out.println(partie.recupererValeurLigne("src/Jeu/coups.txt", i+1));
+        }
+    } 
 }

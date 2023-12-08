@@ -11,12 +11,19 @@ package Jeu;
 public class Grille {
     // Initialisation des variables
     int taille = 5;
-    Cellule[][] grille = new Cellule[taille][taille];
+    public Cellule[][] grille; // Initialisation de la grille
     
     
     // Contructeur de grille
     public Grille(){
- 
+        grille = new Cellule[5][5];
+        
+        for (int j=0;j<5;j++){
+            for (int i=0;i<5;i++){
+                
+                grille[j][i]= new Cellule("vide"); // On remplit la grille de cellules lumineuses avec false comme valeur par défaut
+            }
+        }
     }
    
     

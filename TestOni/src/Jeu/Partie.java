@@ -20,14 +20,15 @@ public class Partie {
     // Initialisation des variables
     Grille grille = new Grille();
     Scanner scan = new Scanner(System.in);
-    ArrayList<Integer> deckTotal = new ArrayList<>();
+    ArrayList<Carte> deckTotal = new ArrayList<>();
+    int[][] coups = new int[4][2];
+    Carte carte;
     // Initialisation du deck de cartes
         
     // Initialisation des decks des deux joueurs
     
     // Contructeur de partie
     public Partie(){
- 
     }
     
     
@@ -37,10 +38,72 @@ public class Partie {
     // - > LISTE DE PIONS DES JOUEURS
     // - > TRAITEMENT FICHIERS .txt
     // Méthode pour récupérer le contenu de la ligne n d'un fichier texte
-    int[][] coups = {{0,1},{1,0},{0,-1},{0,0}};
-    Carte carte = new Carte("Sanglier",coups);
-    //deckTotal.add(carte);
-    
+    public static int recupererValeurLigne(String cheminFichier, int numeroLigne) {
+        int valeur = 0;
+
+        try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
+            String ligne;
+            int numeroLigneActuelle = 1;
+
+            // Parcourir le fichier jusqu'à atteindre la ligne souhaitée
+            while ((ligne = lecteur.readLine()) != null) {
+                if (numeroLigneActuelle == numeroLigne) {
+                    // Vous avez trouvé la ligne souhaitée, convertissez la valeur en int
+                    valeur = Integer.parseInt(ligne.trim());
+                    break; // Sortir de la boucle une fois la ligne trouvée
+                }
+
+                numeroLigneActuelle++;
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+            // Gérer les erreurs liées à la lecture du fichier ou à la conversion en int
+        }
+
+        // Retourner la valeur de la ligne
+        return valeur;
+    }
+    private static String recupererTexteLigne(String cheminFichier, int numeroLigne) {
+        String ligne = null;
+
+        try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
+            int numeroLigneActuelle = 1;
+
+            // Parcourir le fichier jusqu'à atteindre la ligne souhaitée
+            while ((ligne = lecteur.readLine()) != null) {
+                if (numeroLigneActuelle == numeroLigne) {
+                    // Vous avez trouvé la ligne souhaitée
+                    break; // Sortir de la boucle une fois la ligne trouvée
+                }
+
+                numeroLigneActuelle++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Gérer les erreurs liées à la lecture du fichier
+        }
+
+        // Retourner la ligne du fichier en tant que String
+        return ligne;
+    }
+    ArrayList<Carte> creerDeckTotal(){
+        ArrayList<Carte> deck = new ArrayList<>();
+        String nom;
+        int[][]coups = new int[4][2];
+        
+        for(int i=0;i<16;i++){
+            nom = recupererTexteLigne("src/Jeu/noms.txt",i+1);
+            for(int j=0;j<8;j++){
+                
+                   coups[j/2][1]= recupererValeurLigne("src/Jeu/coups.txt", (i*16+j+1));
+                   System.out.println(recupererValeurLigne("src/Jeu/coups.txt", (i*16+j+1))); 
+            }
+            carte = new Carte(nom, coups);
+            deck.add(carte);
+        }
+        return deck;
+    }
+            
     
     // - > DEPLACEMENT PION
     // Choix du déplacement sur une carte
