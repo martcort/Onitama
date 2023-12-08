@@ -31,23 +31,29 @@ public class celluleGraphique extends JButton{
     protected void paintComponent(Graphics g) {
     Image imageADessiner = null;
     if ("eb".equals(celluleAssociee.donneStatut())) {
-    imageADessiner = new ImageIcon("images/eb.png").getImage();
+    imageADessiner = new ImageIcon("src/Jeu/images/eb.png").getImage();
+    System.out.println("eb");
     }
-    if ("er".equals(celluleAssociee.donneStatut())) {
-    imageADessiner = new ImageIcon("images/er.png").getImage();
+    else if ("er".equals(celluleAssociee.donneStatut())) {
+    imageADessiner = new ImageIcon("src/Jeu/images/er.png").getImage();
+    System.out.println("er");
     }
-    if ("mb".equals(celluleAssociee.donneStatut())) {
-    imageADessiner = new ImageIcon("images/mb.png").getImage();
+    else if ("mb".equals(celluleAssociee.donneStatut())) {
+    imageADessiner = new ImageIcon("src/Jeu/images/mb.png").getImage();
+    System.out.println("mb");
     }
-    if ("mr".equals(celluleAssociee.donneStatut())) {
-    imageADessiner = new ImageIcon("images/mr.png").getImage();
+    else if ("mr".equals(celluleAssociee.donneStatut())) {
+    imageADessiner = new ImageIcon("src/Jeu/images/mr.png").getImage();
+    System.out.println("mr");
     } 
     else {
-    imageADessiner = new ImageIcon("images/vide.png").getImage();
+    imageADessiner = new ImageIcon("src/Jeu/images/vide.png").getImage();
+    System.out.println("vide");
     }
     
     // Dessin de l'image dans le composant
     if (imageADessiner != null) {
+    System.out.println("ok");
     g.drawImage(imageADessiner, 0, 0, this);
 }
 }

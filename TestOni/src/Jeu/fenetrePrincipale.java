@@ -17,12 +17,18 @@ public class fenetrePrincipale extends javax.swing.JFrame {
      * Creates new form fenetrePrincipale
      */
     public fenetrePrincipale() {
+        initComponents();
         // Initialisation des variables
         Grille grille = new Grille();
+        
+        getContentPane().add(jPanelGrille, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90,
+        500, 500));
+        this.pack();
+        this.revalidate();
     
     
-    
-        initComponents();
+        
+        
         jPanelGrille.setLayout(new GridLayout(5, 5));
         coteDroit.setLayout( new GridLayout(2,1));
         coteGauche.setLayout( new GridLayout(2,1));
@@ -31,9 +37,10 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         
         for (int i=0; i < 5; i++ ) {
             for (int j=0;j<5; j++){
-            celluleGraphique bouton_cellule = new celluleGraphique(grille.grille[j][i], 25,25); // création d'un bouton
-            jPanelGrille.add(bouton_cellule); // ajout au Jpanel PanneauGrille
-        }}
+                celluleGraphique bouton_cellule = new celluleGraphique(grille.grille[j][i], 25,25); // création d'un bouton
+                jPanelGrille.add(bouton_cellule); // ajout au Jpanel PanneauGrille
+            }
+        }
 
     }
 

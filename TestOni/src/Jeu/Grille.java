@@ -21,7 +21,7 @@ public class Grille {
         for (int j=0;j<5;j++){
             for (int i=0;i<5;i++){
                 
-                grille[j][i]= new Cellule("vide"); // On remplit la grille de cellules lumineuses avec false comme valeur par défaut
+                grille[j][i]= new Cellule("mr"); // On remplit la grille de cellules lumineuses avec false comme valeur par défaut
             }
         }
     }
