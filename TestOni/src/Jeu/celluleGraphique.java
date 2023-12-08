@@ -30,31 +30,35 @@ public class celluleGraphique extends JButton{
     @Override
     protected void paintComponent(Graphics g) {
     Image imageADessiner = null;
+    Image backgroundImage = null;
+    if("gris".equals(celluleAssociee.donneFond())){
+        backgroundImage = new ImageIcon("src/Jeu/images/fond_gris.png").getImage();
+    }
+    else{
+        backgroundImage = new ImageIcon("src/Jeu/images/fond.png").getImage();
+    }
+    
     if ("eb".equals(celluleAssociee.donneStatut())) {
     imageADessiner = new ImageIcon("src/Jeu/images/eb.png").getImage();
-    System.out.println("eb");
     }
     else if ("er".equals(celluleAssociee.donneStatut())) {
     imageADessiner = new ImageIcon("src/Jeu/images/er.png").getImage();
-    System.out.println("er");
     }
     else if ("mb".equals(celluleAssociee.donneStatut())) {
     imageADessiner = new ImageIcon("src/Jeu/images/mb.png").getImage();
-    System.out.println("mb");
     }
     else if ("mr".equals(celluleAssociee.donneStatut())) {
     imageADessiner = new ImageIcon("src/Jeu/images/mr.png").getImage();
-    System.out.println("mr");
     } 
     else {
     imageADessiner = new ImageIcon("src/Jeu/images/vide.png").getImage();
-    System.out.println("vide");
     }
     
     // Dessin de l'image dans le composant
     if (imageADessiner != null) {
     System.out.println("ok");
-    g.drawImage(imageADessiner, 0, 0, this);
+    g.drawImage(backgroundImage,0,0,100,100,this);
+    g.drawImage(imageADessiner, 0, 0,100,100, this);
 }
 }
 }

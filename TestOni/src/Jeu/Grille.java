@@ -7,12 +7,13 @@ package Jeu;
 /**
  *
  * @author marti
- */
+  */
+
 public class Grille {
     // Initialisation des variables
     int taille = 5;
     public Cellule[][] grille; // Initialisation de la grille
-    
+
     
     // Contructeur de grille
     public Grille(){
@@ -21,12 +22,11 @@ public class Grille {
         for (int j=0;j<5;j++){
             for (int i=0;i<5;i++){
                 
-                grille[j][i]= new Cellule("mr"); // On remplit la grille de cellules lumineuses avec false comme valeur par défaut
+                grille[j][i]= new Cellule("vide"); // On remplit la grille de cellules lumineuses avec false comme valeur par défaut
             }
         }
     }
-   
-    
+
     // Méthodes d'information
     // Vérifie la non présence de pions bleus dans la grille
     boolean queRouge(){ 
@@ -52,7 +52,7 @@ public class Grille {
         return true;
     }
     
-    // Déplacement la légalité d'un déplacement voulu par un pion
+    // Vérifie la légalité d'un déplacement voulu par un pion
     boolean deplacementLegal(int[] position, int[] deplacement){
         int xp = position[1];
         int yp = position[0];
@@ -85,5 +85,18 @@ public class Grille {
         }
         return false; // Au cas ou il ne s'agirait des cas (supposément impossible) on return false
         
+    }
+    
+    // Méthodes de changement de variables
+    // Initialiser la grille pour débuter une nouvelle partie
+    public void initialiser(){
+        for(int i=0;i<5;i++){
+            grille[i][0].changeStatut("eb");
+            grille[2][0].changeStatut("mb");  
+        }
+                for(int i=0;i<5;i++){
+            grille[i][4].changeStatut("er");
+            grille[2][4].changeStatut("mr");  
+        }
     }
 }

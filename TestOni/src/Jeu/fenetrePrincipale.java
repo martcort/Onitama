@@ -10,7 +10,7 @@ import javax.swing.JButton;
 public class fenetrePrincipale extends javax.swing.JFrame {
     
     
-    
+    Grille grille = new Grille();
     
     
     /**
@@ -19,9 +19,9 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     public fenetrePrincipale() {
         initComponents();
         // Initialisation des variables
-        Grille grille = new Grille();
         
-        getContentPane().add(jPanelGrille, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90,
+        
+        getContentPane().add(jPanelGrille, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50,
         500, 500));
         this.pack();
         this.revalidate();
@@ -35,12 +35,13 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         
         
         
-        for (int i=0; i < 5; i++ ) {
-            for (int j=0;j<5; j++){
+        for (int j=0; j < 5; j++ ) {
+            for (int i=0;i<5; i++){
                 celluleGraphique bouton_cellule = new celluleGraphique(grille.grille[j][i], 25,25); // création d'un bouton
                 jPanelGrille.add(bouton_cellule); // ajout au Jpanel PanneauGrille
             }
         }
+        initialiserPartie();
 
     }
 
@@ -123,16 +124,14 @@ public class fenetrePrincipale extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    public void initialiserPartie(){
+        grille.initialiser();
+        repaint();
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -157,6 +156,9 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                 new fenetrePrincipale().setVisible(true);
             }
         });
+        
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
