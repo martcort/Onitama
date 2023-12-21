@@ -1,6 +1,10 @@
 package Jeu;
 
 import java.awt.GridLayout;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.JButton;
 
 /**
@@ -9,7 +13,7 @@ import javax.swing.JButton;
  */
 public class fenetrePrincipale extends javax.swing.JFrame {
     
-    
+    Carte carte;
     Grille grille = new Grille();
     
     
@@ -42,6 +46,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
             }
         }
         initialiserPartie();
+        creerDeckTotal();
 
     }
 
@@ -124,6 +129,98 @@ public class fenetrePrincipale extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    
+    
+    
+    // --------------------------------------------------------------------------
+    // -------------------- METHODES POUR CREER LES DECKS -----------------------
+    // --------------------------------------------------------------------------
+    // Méthode pour récupérer le contenu de la ligne n d'un fichier texte.
+    
+    
+    private static int recupererValeurLigne(String cheminFichier, int numeroLigne) {
+        int valeur = 0;
+
+        try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
+            String ligne;
+            int numeroLigneActuelle = 1;
+
+            // Parcourir le fichier jusqu'à atteindre la ligne souhaitée
+            while ((ligne = lecteur.readLine()) != null) {
+                if (numeroLigneActuelle == numeroLigne) {
+                    // Vous avez trouvé la ligne souhaitée, convertissez la valeur en int
+                    valeur = Integer.parseInt(ligne.trim());
+                    break; // Sortir de la boucle une fois la ligne trouvée
+                }
+
+                numeroLigneActuelle++;
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+            // Gérer les erreurs liées à la lecture du fichier ou à la conversion en int
+        }
+
+        // Retourner la valeur de la ligne
+        return valeur;
+    }
+    private static String recupererTexteLigne(String cheminFichier, int numeroLigne) {
+        String ligne = null;
+
+        try (BufferedReader lecteur = new BufferedReader(new FileReader(cheminFichier))) {
+            int numeroLigneActuelle = 1;
+
+            // Parcourir le fichier jusqu'à atteindre la ligne souhaitée
+            while ((ligne = lecteur.readLine()) != null) {
+                if (numeroLigneActuelle == numeroLigne) {
+                    // Vous avez trouvé la ligne souhaitée
+                    break; // Sortir de la boucle une fois la ligne trouvée
+                }
+
+                numeroLigneActuelle++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Gérer les erreurs liées à la lecture du fichier
+        }
+
+        // Retourner la ligne du fichier en tant que String
+        return ligne;
+    }
+    ArrayList<Carte> creerDeckTotal(){
+        ArrayList<Carte> deck = new ArrayList<>();
+        String nom;
+        String image;
+        int[][]coups = new int[4][2];
+        int l;
+        int indice;
+        for(int i=0;i<16;i++){
+            
+            nom = recupererTexteLigne("src/Jeu/noms.txt",i+1);
+            image = nom+".jpg";
+            for(int j=0;j<4;j++){
+                
+                for(int k=0;k<2;k++){
+                    l = j/2;
+                    indice = i*8+j*2+k+1;
+                    coups[j][k]= recupererValeurLigne("src/Jeu/coups.txt", (indice));
+                    //System.out.println("ligne"+ (indice));
+                    //System.out.println("i="+i+" j="+j+" k="+k +" l="+l);
+                    System.out.println(recupererValeurLigne("src/Jeu/coups.txt", (indice)));
+                    //System.out.println("j="+j+" k="+k);
+                }
+                   //coups[j][1]= recupererValeurLigne("src/Jeu/coups.txt", (i*4+j+1));
+                   //System.out.println("ligne"+ (i*4+j+1));
+                   //System.out.println(recupererValeurLigne("src/Jeu/coups.txt", (i*4+j+1))); 
+            }
+            carte = new Carte(nom,image, coups);
+            System.out.println(carte);
+            deck.add(carte);
+        }
+        return deck;
+    }
+    
+    
     public void initialiserPartie(){
         grille.initialiser();
         repaint();
