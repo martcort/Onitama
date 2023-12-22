@@ -1,6 +1,8 @@
 package Jeu;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,6 +18,11 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     
     Carte carte;
     Grille grille = new Grille();
+    Cellule celluleJouee;
+    String joueurJouant;
+    Carte carteJouee;
+    
+    
     ArrayList<Carte> deckTotal;
     ArrayList<Carte> deckJrGauche;
     ArrayList<Carte> deckJrDroite;
@@ -53,20 +60,52 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         coteDroit.setLayout( new GridLayout(2,1));
         coteGauche.setLayout( new GridLayout(2,1));
         defausseJPanel.setLayout( new GridLayout(1,1));
-        
-        
-        for (int j=0; j < 5; j++ ) {
-            for (int i=0;i<5; i++){
-                int position[] = {j,i};
-                celluleGraphique bouton_cellule = new celluleGraphique(grille.grille[j][i], largeurGrille/5,largeurGrille/5); // création d'un bouton
-                jPanelGrille.add(bouton_cellule); // ajout au Jpanel PanneauGrille
-            }
-        }
-        
+        // -----------------------------Initialisation deck et défausse-------------------------------------------------------
         deckTotal = creerDeckTotal();
         deckJrGauche = initDeckJr();
         deckJrDroite = initDeckJr();
         defausse = initDefausse();
+        
+        
+        
+        // -----------------------------Création boutons ---------------------------------------------------------------------
+        for (int j=0; j < 5; j++ ) {
+            for (int i=0;i<5; i++){
+                int position[] = {j,i};
+                celluleGraphique boutonCellule = new celluleGraphique(grille.grille[j][i], largeurGrille/5,largeurGrille/5); // création d'un bouton
+                
+                ActionListener ecouteurClick;
+                final int yCell = j;
+                final int xCell = i;
+                ecouteurClick = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //Action à effectuer lorsque le bouton est cliqué
+                    System.out.println(yCell+""+xCell+" cliqué");
+                    int [] deplacement = {yCell,xCell};
+                    String stt = grille.grille[yCell][xCell].donneStatut();
+                    //grille.grille[yCell][xCell].devientMarron();
+                    System.out.println(stt);
+                    
+                    
+                    //if("gris".equals(grille.grille[yCell][xCell].donneFond())){
+                    //    deplacerPion(celluleJouee,deplacement);
+                    //}
+                    if("eb".equals(stt) || "mb".equals(stt) || "er".equals(stt) || "mr".equals(stt)){
+                        celluleJouee = grille.grille[yCell][xCell];
+                        grille.grille[yCell][xCell].devientMarron();
+                        System.out.println("Il devient marron");
+                    }
+                    repaint();
+                    //victoire();
+                }
+            };
+            boutonCellule.addActionListener(ecouteurClick);
+                jPanelGrille.add(boutonCellule); // ajout au Jpanel PanneauGrille
+            }
+        }
+        
+        
         
         for (int i=0;i<2;i++){
             carteGraphique bouton_carte = new carteGraphique(deckJrGauche.get(i),150,90);
@@ -80,10 +119,12 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         defausseJPanel.add(bouton_carte);
         
         initialiserPartie();
-        System.out.println("deckTotal"+ deckTotal);
-        System.out.println("deckJrGauche"+ deckJrGauche);
-        System.out.println("deckJrDroite"+ deckJrDroite);
-        griseCasesMv("gauche",deckJrGauche.get(1),grille.grille [2][1]);
+        //System.out.println("deckTotal"+ deckTotal);
+        //System.out.println("deckJrGauche"+ deckJrGauche);
+        //System.out.println("deckJrDroite"+ deckJrDroite);
+        //griseCasesMv("gauche",deckJrGauche.get(1),grille.grille [2][1]);
+        int[] coo = {2,4};
+        deplacerPion(grille.grille[2][0],coo);
     }
 
     /**
@@ -243,7 +284,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                     coups[j][k]= recupererValeurLigne("src/Jeu/coups.txt", (indice));
                     //System.out.println("ligne"+ (indice));
                     //System.out.println("i="+i+" j="+j+" k="+k +" l="+l);
-                    System.out.println(recupererValeurLigne("src/Jeu/coups.txt", (indice)));
+                    //System.out.println(recupererValeurLigne("src/Jeu/coups.txt", (indice)));
                 }
             }
             
@@ -308,7 +349,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                 }
             txt = txt+"}";
         }
-        System.out.println("Mouvements = "+txt);
+        //System.out.println("Mouvements = "+txt);
         txt = "";
         for (int i=0;i<4;i++){
             txt = txt+"{";
@@ -318,9 +359,9 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                 }
             txt = txt+"}";
         }
-        System.out.println("POSITION -> "+positionPion[1] + " "+ positionPion[0]);
-        System.out.println("DEPLACEMENTS ->"+carte);
-        System.out.println(txt);
+        //System.out.println("POSITION -> "+positionPion[1] + " "+ positionPion[0]);
+        //System.out.println("DEPLACEMENTS ->"+carte);
+        //System.out.println(txt);
         
         for(int i=0;i<4;i++){
             if(grille.deplacementLegal(positionPion, mouvements[i]) == false){
@@ -335,6 +376,20 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         grille.grille[positionPion[1]][positionPion[0]].devientMarron();
         repaint();
     }
+    
+    void deplacerPion(Cellule cell, int[] deplacement){
+        // On part du principe que les déplacements proposés sont tous légaux
+        String statut = cell.donneStatut();
+        int[] positionCell = cell.donnePosition();
+        int[] cooDeplacement = new int[2];
+        cooDeplacement[0] =deplacement[0];
+        cooDeplacement[1] =deplacement[1];
+        grille.grille[positionCell[0]][positionCell[1]].changeStatut("vide");
+        grille.grille[cooDeplacement[0]][cooDeplacement[1]].changeStatut(statut);
+        repaint();
+        
+    }
+    
     
     public void initialiserPartie(){
         grille.initialiser();
