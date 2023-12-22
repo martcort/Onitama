@@ -291,11 +291,14 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         int[][] mouvements = new int[4][2];
         
         // On combine les déplacements relatifs de la carte et la position de la cellule pour obtenir les deplacements absolus.
+        
+        
         for(int i=0;i<4;i++){
             for (int j=0;j<2;j++){
-            mouvements[i][j] = positionPion[j]+mouvementsCarte[i][j];   
+            mouvements[i][j] = positionPion[(j+1)%2]+mouvementsCarte[i][j];   
         }
         }
+        // Observer
         String txt = "";
         for (int i=0;i<4;i++){
             txt = txt+"{";
@@ -305,7 +308,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                 }
             txt = txt+"}";
         }
-        System.out.println(txt);
+        System.out.println("Mouvements = "+txt);
         txt = "";
         for (int i=0;i<4;i++){
             txt = txt+"{";
@@ -315,16 +318,20 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                 }
             txt = txt+"}";
         }
-        System.out.println(positionPion[1] + " "+ positionPion[0]);
-        System.out.println(carte);
+        System.out.println("POSITION -> "+positionPion[1] + " "+ positionPion[0]);
+        System.out.println("DEPLACEMENTS ->"+carte);
         System.out.println(txt);
         
         for(int i=0;i<4;i++){
             if(grille.deplacementLegal(positionPion, mouvements[i]) == false){
                 mouvements[i] = zero;
             }
+            if(mouvements[i][0]!=0 || mouvements[i][1]!= 0){
             grille.grille[mouvements[i][0]][mouvements[i][1]].devientGris();
+            //grille.grille[0][2].devientGris();
+            }
         }
+        
         grille.grille[positionPion[1]][positionPion[0]].devientMarron();
         repaint();
     }
