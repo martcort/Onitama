@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.JButton;
 
 /**
@@ -15,7 +16,10 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     
     Carte carte;
     Grille grille = new Grille();
-    
+    ArrayList<Carte> deckTotal;
+    ArrayList<Carte> deckJrBleu;
+    ArrayList<Carte> deckJrRouge;
+    ArrayList<Carte> defausseJPanel;
     
     /**
      * Creates new form fenetrePrincipale
@@ -46,7 +50,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
             }
         }
         initialiserPartie();
-        creerDeckTotal();
+        deckTotal = creerDeckTotal();
 
     }
 
@@ -62,7 +66,6 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         jPanelGrille = new javax.swing.JPanel();
         coteDroit = new javax.swing.JPanel();
         coteGauche = new javax.swing.JPanel();
-        defausse = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -112,21 +115,6 @@ public class fenetrePrincipale extends javax.swing.JFrame {
 
         getContentPane().add(coteGauche, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 145, -1, 149));
 
-        defausse.setBackground(new java.awt.Color(200, 63, 65));
-
-        javax.swing.GroupLayout defausseLayout = new javax.swing.GroupLayout(defausse);
-        defausse.setLayout(defausseLayout);
-        defausseLayout.setHorizontalGroup(
-            defausseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 121, Short.MAX_VALUE)
-        );
-        defausseLayout.setVerticalGroup(
-            defausseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(defausse, new org.netbeans.lib.awtextra.AbsoluteConstraints(131, 39, -1, -1));
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
@@ -136,9 +124,9 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     // --------------------------------------------------------------------------
     // -------------------- METHODES POUR CREER LES DECKS -----------------------
     // --------------------------------------------------------------------------
-    // Méthode pour récupérer le contenu de la ligne n d'un fichier texte.
+  
     
-    
+  // - Méthodes pour récupérer le texte ou le int de la i-ème ligne d'un fichier .txt  
     private static int recupererValeurLigne(String cheminFichier, int numeroLigne) {
         int valeur = 0;
 
@@ -187,6 +175,8 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         // Retourner la ligne du fichier en tant que String
         return ligne;
     }
+    
+  // - Méthode permettant de créer le deck de carte total, contentant 16 cartes (Sanglier, Oie etc...)
     ArrayList<Carte> creerDeckTotal(){
         ArrayList<Carte> deck = new ArrayList<>();
         String nom;
@@ -207,11 +197,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                     //System.out.println("ligne"+ (indice));
                     //System.out.println("i="+i+" j="+j+" k="+k +" l="+l);
                     System.out.println(recupererValeurLigne("src/Jeu/coups.txt", (indice)));
-                    //System.out.println("j="+j+" k="+k);
                 }
-                   //coups[j][1]= recupererValeurLigne("src/Jeu/coups.txt", (i*4+j+1));
-                   //System.out.println("ligne"+ (i*4+j+1));
-                   //System.out.println(recupererValeurLigne("src/Jeu/coups.txt", (i*4+j+1))); 
             }
             carte = new Carte(nom,image, coups);
             System.out.println(carte);
@@ -219,6 +205,31 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         }
         return deck;
     }
+    
+    ArrayList<Carte> initDeckJr(){
+        Random random = new Random();
+        int n ;
+        ArrayList<Carte> deck = new ArrayList<>();
+        int taille = deckTotal.size();
+        for(int i=0;i<2;i++){
+            n = random.nextInt(taille);
+            deck.add(deckTotal.get(n));
+            deckTotal.remove(n);
+        }
+        return deck;
+    }
+    ArrayList<Carte> initDefausse(){
+        Random random = new Random();
+        int n = random.nextInt(deckTotal.size());
+        ArrayList<Carte> defausse = new ArrayList<>();
+        
+        defausse.add(deckTotal.get(n));
+        deckTotal.remove(n);
+        
+        return defausse;
+        
+    }
+    
     
     
     public void initialiserPartie(){
@@ -261,7 +272,6 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel coteDroit;
     private javax.swing.JPanel coteGauche;
-    private javax.swing.JPanel defausse;
     private javax.swing.JPanel jPanelGrille;
     // End of variables declaration//GEN-END:variables
 }

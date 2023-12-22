@@ -89,10 +89,12 @@ public class Partie {
     ArrayList<Carte> creerDeckTotal(){
         ArrayList<Carte> deck = new ArrayList<>();
         String nom;
+        String image;
         int[][]coups = new int[4][2];
         
         for(int i=0;i<16;i++){
             nom = recupererTexteLigne("src/Jeu/noms.txt",i+1);
+            image = nom + ".png";
             for(int j=0;j<8;j++){
                 
                    coups[j/2][1]= recupererValeurLigne("src/Jeu/coups.txt", (i*16+j+1));
