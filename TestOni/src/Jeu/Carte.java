@@ -15,29 +15,29 @@ public class Carte {
     private int[][] coups = new int[4][2];
     private int[][] coupsGauche = new int[4][2];
     private int[][] coupsDroite = new int[4][2];
+    
+    
     // Contructeur de carte
     public Carte(String name,String im, int[][] tab){
         nom = name;
         image = im;
+        
+        
+        for (int i=0;i<4;i++){
+            tab[i][0] = -tab[i][0];
+        }
+        
+        String txt = "";
+        for(int i=0;i<4;i++){
+            for (int j=0;j<2;j++){
+                txt = txt+tab[i][j];
+            }
+            txt = txt+" ,";
+        }
+        System.out.println(txt);
         coups = tab;
-        
-        coupsGauche = coups;
-        for(int i=0;i<4;i++){
-            int n;
-            n = coupsGauche[i][0];
-            coupsGauche[i][0] = coupsGauche[i][1];
-            coupsGauche[i][1] = -n;
         }
-        
-        coupsDroite = coups;
-        for(int i=0;i<4;i++){
-            int n;
-            n = coupsGauche[i][0];
-            coupsGauche[i][0] = -coupsGauche[i][1];
-            coupsGauche[i][1] = n;
-        
-        }
-        }
+       
     
     //Méthodes d'information
     String donneNom(){
@@ -47,6 +47,23 @@ public class Carte {
     
     int[][] donneCoups(){
         return coups;
+    }
+    int[][] donneCoupsGauche(){
+        // Observer
+        String txt = "";
+        for(int i=0;i<4;i++){
+            txt = txt+"{";
+            for(int j=0;j<2;j++){
+                txt = txt + coupsGauche[i][j];
+            }
+            txt = txt+"}";
+        }
+        System.out.println("Il s'agit d'observer :"+txt);
+        
+        return coupsGauche;
+    }
+    int[][] donneCoupsDroite(){
+        return coupsDroite;
     }
 
     
@@ -66,6 +83,16 @@ public class Carte {
             }
             txt = txt+"}";
         }
+        // Observer
+        txt = txt + "//";
+        for(int i=0;i<4;i++){
+            txt = txt+"{";
+            for(int j=0;j<2;j++){
+                txt = txt + coupsGauche[i][j];
+            }
+            txt = txt+"}";
+        }
+        // ---
         return txt;
         
     }
