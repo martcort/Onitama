@@ -17,10 +17,14 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     Carte carte;
     Grille grille = new Grille();
     ArrayList<Carte> deckTotal;
-    ArrayList<Carte> deckJrBleu;
-    ArrayList<Carte> deckJrRouge;
-    ArrayList<Carte> defausseJPanel;
+    ArrayList<Carte> deckJrGauche;
+    ArrayList<Carte> deckJrDroite;
+    ArrayList<Carte> defausse;
     
+    // Dimensions fenetre
+    int largeurCarte = 300;
+    int hauteurCarte = 180;
+    int largeurGrille = 500;
     /**
      * Creates new form fenetrePrincipale
      */
@@ -28,9 +32,17 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         initComponents();
         // Initialisation des variables
         
+        getContentPane().add(coteGauche, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250,
+        largeurCarte, hauteurCarte*2));
         
-        getContentPane().add(jPanelGrille, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50,
-        500, 500));
+        getContentPane().add(jPanelGrille, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 200,
+        largeurGrille, largeurGrille));
+        
+        getContentPane().add(coteDroit, new org.netbeans.lib.awtextra.AbsoluteConstraints(largeurGrille+largeurCarte+40, 250,
+        largeurCarte, hauteurCarte*2));
+        
+        getContentPane().add(defausseJPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(425, 10,
+        largeurCarte, hauteurCarte));
         this.pack();
         this.revalidate();
     
@@ -40,18 +52,38 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         jPanelGrille.setLayout(new GridLayout(5, 5));
         coteDroit.setLayout( new GridLayout(2,1));
         coteGauche.setLayout( new GridLayout(2,1));
-        
+        defausseJPanel.setLayout( new GridLayout(1,1));
         
         
         for (int j=0; j < 5; j++ ) {
             for (int i=0;i<5; i++){
-                celluleGraphique bouton_cellule = new celluleGraphique(grille.grille[j][i], 25,25); // création d'un bouton
+                int position[] = {j,i};
+                celluleGraphique bouton_cellule = new celluleGraphique(grille.grille[j][i], largeurGrille/5,largeurGrille/5); // création d'un bouton
                 jPanelGrille.add(bouton_cellule); // ajout au Jpanel PanneauGrille
             }
         }
-        initialiserPartie();
+        
         deckTotal = creerDeckTotal();
-
+        deckJrGauche = initDeckJr();
+        deckJrDroite = initDeckJr();
+        defausse = initDefausse();
+        
+        for (int i=0;i<2;i++){
+            carteGraphique bouton_carte = new carteGraphique(deckJrGauche.get(i),150,90);
+            coteGauche.add(bouton_carte);
+        }
+        for (int i=0;i<2;i++){
+            carteGraphique bouton_carte = new carteGraphique(deckJrDroite.get(i),150,90);
+            coteDroit.add(bouton_carte);
+        }
+        carteGraphique bouton_carte = new carteGraphique(defausse.get(0),150,90);
+        defausseJPanel.add(bouton_carte);
+        
+        initialiserPartie();
+        System.out.println("deckTotal"+ deckTotal);
+        System.out.println("deckJrGauche"+ deckJrGauche);
+        System.out.println("deckJrDroite"+ deckJrDroite);
+        griseCasesMv("gauche",deckJrGauche.get(1),grille.grille [2][1]);
     }
 
     /**
@@ -66,6 +98,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         jPanelGrille = new javax.swing.JPanel();
         coteDroit = new javax.swing.JPanel();
         coteGauche = new javax.swing.JPanel();
+        defausseJPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -115,6 +148,19 @@ public class fenetrePrincipale extends javax.swing.JFrame {
 
         getContentPane().add(coteGauche, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 145, -1, 149));
 
+        javax.swing.GroupLayout defausseJPanelLayout = new javax.swing.GroupLayout(defausseJPanel);
+        defausseJPanel.setLayout(defausseJPanelLayout);
+        defausseJPanelLayout.setHorizontalGroup(
+            defausseJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 200, Short.MAX_VALUE)
+        );
+        defausseJPanelLayout.setVerticalGroup(
+            defausseJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 120, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(defausseJPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 20, 200, 120));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
@@ -126,7 +172,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     // --------------------------------------------------------------------------
   
     
-  // - Méthodes pour récupérer le texte ou le int de la i-ème ligne d'un fichier .txt  
+    // - Méthodes pour récupérer le texte ou le int de la i-ème ligne d'un fichier .txt  
     private static int recupererValeurLigne(String cheminFichier, int numeroLigne) {
         int valeur = 0;
 
@@ -181,11 +227,12 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         ArrayList<Carte> deck = new ArrayList<>();
         String nom;
         String image;
-        int[][]coups = new int[4][2];
+        //int[][]coups = new int[4][2];
+        int[][]coupsCopie = new int[4][2]; // Pour palier au problème de référence objet
         int l;
         int indice;
         for(int i=0;i<16;i++){
-            
+            int[][]coups = new int[4][2];
             nom = recupererTexteLigne("src/Jeu/noms.txt",i+1);
             image = nom+".jpg";
             for(int j=0;j<4;j++){
@@ -199,9 +246,12 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                     System.out.println(recupererValeurLigne("src/Jeu/coups.txt", (indice)));
                 }
             }
+            
             carte = new Carte(nom,image, coups);
             System.out.println(carte);
             deck.add(carte);
+            System.out.println(deck);
+            
         }
         return deck;
     }
@@ -230,7 +280,54 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         
     }
     
+    // --------------------------------------------------------------------------
+    // -------------------- METHODES POUR JOUER  --------------------------------
+    // --------------------------------------------------------------------------
     
+    void griseCasesMv(String joueur, Carte carte, Cellule cell){
+        int[][] mouvementsCarte = carte.donneCoupsGauche();
+        int[] positionPion = cell.donnePosition();
+        int[] zero = {0,0};
+        int[][] mouvements = new int[4][2];
+        
+        // On combine les déplacements relatifs de la carte et la position de la cellule pour obtenir les deplacements absolus.
+        for(int i=0;i<4;i++){
+            for (int j=0;j<2;j++){
+            mouvements[i][j] = positionPion[j]+mouvementsCarte[i][j];   
+        }
+        }
+        String txt = "";
+        for (int i=0;i<4;i++){
+            txt = txt+"{";
+                for(int j=0;j<2;j++){
+                    txt = txt+" "+mouvementsCarte[i][j];
+                    
+                }
+            txt = txt+"}";
+        }
+        System.out.println(txt);
+        txt = "";
+        for (int i=0;i<4;i++){
+            txt = txt+"{";
+                for(int j=0;j<2;j++){
+                    txt = txt+" "+mouvements[i][j];
+                    
+                }
+            txt = txt+"}";
+        }
+        System.out.println(positionPion[1] + " "+ positionPion[0]);
+        System.out.println(carte);
+        System.out.println(txt);
+        
+        for(int i=0;i<4;i++){
+            if(grille.deplacementLegal(positionPion, mouvements[i]) == false){
+                mouvements[i] = zero;
+            }
+            grille.grille[mouvements[i][0]][mouvements[i][1]].devientGris();
+        }
+        grille.grille[positionPion[1]][positionPion[0]].devientMarron();
+        repaint();
+    }
     
     public void initialiserPartie(){
         grille.initialiser();
@@ -239,6 +336,9 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    
+    
+    
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -272,6 +372,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel coteDroit;
     private javax.swing.JPanel coteGauche;
+    private javax.swing.JPanel defausseJPanel;
     private javax.swing.JPanel jPanelGrille;
     // End of variables declaration//GEN-END:variables
 }
