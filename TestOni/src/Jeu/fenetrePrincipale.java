@@ -28,6 +28,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     ArrayList<Carte> deckJrDroite;
     ArrayList<Carte> defausse;
     
+    
     // Dimensions fenetre
     int largeurCarte = 300;
     int hauteurCarte = 180;
@@ -66,8 +67,9 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         deckJrDroite = initDeckJr();
         defausse = initDefausse();
         
-        
-        
+        // Pour le test
+        carteJouee = null;
+        joueurJouant = "gauche";
         // -----------------------------Création boutons ---------------------------------------------------------------------
         for (int j=0; j < 5; j++ ) {
             for (int i=0;i<5; i++){
@@ -84,18 +86,45 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                     System.out.println(yCell+""+xCell+" cliqué");
                     int [] deplacement = {yCell,xCell};
                     String stt = grille.grille[yCell][xCell].donneStatut();
-                    //grille.grille[yCell][xCell].devientMarron();
+                    String fond = grille.grille[yCell][xCell].donneFond();
+                    
+                    // Observer
                     System.out.println(stt);
+                    System.out.println(fond);
                     
                     
-                    //if("gris".equals(grille.grille[yCell][xCell].donneFond())){
-                    //    deplacerPion(celluleJouee,deplacement);
-                    //}
-                    if("eb".equals(stt) || "mb".equals(stt) || "er".equals(stt) || "mr".equals(stt)){
-                        celluleJouee = grille.grille[yCell][xCell];
-                        grille.grille[yCell][xCell].devientMarron();
-                        System.out.println("Il devient marron");
-                    }
+                    // On vérifie si une carte est en train d'être jouée
+                    //if(carteJouee != null){
+                        //if("eb".equals(stt) || "mb".equals(stt) || "er".equals(stt) || "mr".equals(stt)){
+                            if("gris".equals(fond)){
+                                System.out.println("aigri");
+                                deplacerPion(celluleJouee,deplacement);
+                                grille.toutNormal();
+                                celluleJouee = null;
+                            }
+                            else if("normal".equals(fond)){
+                                System.out.println("considéré normal");
+                                if(celluleJouee == null){
+                                    if("eb".equals(stt) || "mb".equals(stt)){
+                                        if("gauche".equals(joueurJouant)){
+                                            celluleJouee = grille.grille[yCell][xCell];
+                                            griseCasesMv(joueurJouant,carteJouee,grille.grille[xCell][yCell]);
+                                        }
+                                        
+                                    }
+                                    else if("er".equals(stt) || "mr".equals(stt)){
+                                        if("droite".equals(joueurJouant)){
+                                            celluleJouee = grille.grille[yCell][xCell];
+                                            griseCasesMv(joueurJouant,carteJouee,grille.grille[xCell][yCell]);
+                                        }
+                                        
+                                    }
+                                } 
+                             else if("marron".equals(fond)){
+                                grille.toutNormal();
+                                System.out.println("re init");
+                            }
+                           }
                     repaint();
                     //victoire();
                 }
@@ -108,9 +137,22 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         
         
         for (int i=0;i<2;i++){
-            carteGraphique bouton_carte = new carteGraphique(deckJrGauche.get(i),150,90);
-            coteGauche.add(bouton_carte);
+            carteGraphique boutonCarte = new carteGraphique(deckJrGauche.get(i),150,90);
+            final Carte carte = deckJrGauche.get(i);
+            ActionListener ecouteurClick;
+            ecouteurClick = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if("gauche".equals(joueurJouant));
+                    carteJouee = carte;
+                    repaint();
+                    //victoire();
+                }
+            };
+            boutonCarte.addActionListener(ecouteurClick);
+            coteGauche.add(boutonCarte);
         }
+        
         for (int i=0;i<2;i++){
             carteGraphique bouton_carte = new carteGraphique(deckJrDroite.get(i),150,90);
             coteDroit.add(bouton_carte);
@@ -123,8 +165,8 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         //System.out.println("deckJrGauche"+ deckJrGauche);
         //System.out.println("deckJrDroite"+ deckJrDroite);
         //griseCasesMv("gauche",deckJrGauche.get(1),grille.grille [2][1]);
-        int[] coo = {2,4};
-        deplacerPion(grille.grille[2][0],coo);
+        //int[] coo = {2,4};
+        //deplacerPion(grille.grille[2][0],coo);
     }
 
     /**
@@ -326,7 +368,15 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     // --------------------------------------------------------------------------
     
     void griseCasesMv(String joueur, Carte carte, Cellule cell){
-        int[][] mouvementsCarte = carte.donneCoupsGauche();
+        int[][] mouvementsCarte = carte.donneCoups(); // On initialise juste( ça ne sert à rien), la suite est intéressante
+        
+        if("gauche".equals(joueur)){
+           mouvementsCarte = carte.donneCoupsGauche(); 
+        }
+        else if("droite".equals(joueur)){
+           mouvementsCarte = carte.donneCoupsDroite(); 
+        }
+        
         int[] positionPion = cell.donnePosition();
         int[] zero = {0,0};
         int[][] mouvements = new int[4][2];
@@ -390,6 +440,14 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         
     }
     
+    void joueurSuivant(){
+        if("gauche".equals(joueurJouant)){
+            joueurJouant = "droite";
+        }
+        else{
+            joueurJouant = "gauche";
+        }
+    }
     
     public void initialiserPartie(){
         grille.initialiser();
