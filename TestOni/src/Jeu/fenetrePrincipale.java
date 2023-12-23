@@ -48,6 +48,9 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         getContentPane().add(logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40,
         266, 113));
         
+        getContentPane().add(texte, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40,
+        266, 113));
+        
         getContentPane().add(coteGauche, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250,
         largeurCarte, hauteurCarte*2));
         
@@ -70,6 +73,8 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         coteGauche.setLayout( new GridLayout(2,1));
         defausseJPanel.setLayout( new GridLayout(1,1));
         logo.setLayout( new GridLayout(1,1));
+        texte.setLayout( new GridLayout(1,1));
+        
         
         // -----------------------------Initialisation deck et défausse-------------------------------------------------------
         deckTotal = creerDeckTotal();
@@ -84,6 +89,9 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         // Initialisation defausse
         carteGraphique bouton_carte = new carteGraphique(defausse.get(0),150,90);
         defausseJPanel.add(bouton_carte);
+        
+        texte boutonTexte = new texte(joueurJouant);
+        texte.add(boutonTexte);
         
         // Création des bouton Cases et des actions à effectuer
         for (int j=0; j < 5; j++ ) {
@@ -117,12 +125,8 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                             echangerDefausse(joueurJouant,carteJouee);
                             carteJouee = null;
                             
-                           //actualiser();
-                            
                             joueurSuivant();
-                            
-                            
-                               
+                            System.out.println("-------->"+joueurJouant+"<-----------");      
                         }
                         else if("normal".equals(fond)){
                             System.out.println("considéré normal");
@@ -150,6 +154,8 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                 }
                     repaint();
                     actualiser();
+                    // On vérifie si il y a victoire d'un joueur
+                    victoire();
                     //victoire();
                 }
             };
@@ -217,6 +223,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
             //boutonLogo.setContentAreaFilled(false);
 
             logo.add(boutonLogo);
+            
         
         initialiserPartie();
 
@@ -236,6 +243,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         coteGauche = new javax.swing.JPanel();
         defausseJPanel = new javax.swing.JPanel();
         logo = new javax.swing.JPanel();
+        texte = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -310,6 +318,19 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         );
 
         getContentPane().add(logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
+
+        javax.swing.GroupLayout texteLayout = new javax.swing.GroupLayout(texte);
+        texte.setLayout(texteLayout);
+        texteLayout.setHorizontalGroup(
+            texteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        texteLayout.setVerticalGroup(
+            texteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(texte, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 20, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -413,6 +434,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         ArrayList<Carte> deck = new ArrayList<>();
         int taille = deckTotal.size();
         for(int i=0;i<2;i++){
+            taille = deckTotal.size();
             n = random.nextInt(taille);
             deck.add(deckTotal.get(n));
             deckTotal.remove(n);
@@ -435,6 +457,18 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     // --------------------------------------------------------------------------
     // -------------------- METHODES POUR JOUER  --------------------------------
     // --------------------------------------------------------------------------
+    
+    void victoire(){
+        if(grille.victoireDroite()==true){
+            fenetreVictoire f = new fenetreVictoire("droite") ;
+            f.setVisible(true) ;
+        }
+        if(grille.victoireGauche()==true){
+            fenetreVictoire f = new fenetreVictoire("gauche") ;
+            f.setVisible(true) ;
+        }
+    }
+    
     
     void griseCasesMv(String joueur, Carte carte, Cellule cell){
         System.out.println(deckJrGauche.get(0).donneNom()+deckJrGauche.get(1).donneNom());
@@ -513,10 +547,13 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     void joueurSuivant(){
         if("gauche".equals(joueurJouant)){
             joueurJouant = "droite";
+            System.out.println("euhhhhhh"+joueurJouant);
         }
         else{
             joueurJouant = "gauche";
         }
+        actualiserTexte();
+        repaint();
     }
     
     public void initialiserPartie(){
@@ -613,6 +650,13 @@ void actualiserLogo(){
     logo.revalidate();
     logo.repaint();
 }
+void actualiserTexte(){
+    texte.removeAll();
+    texte boutonTexte = new texte(joueurJouant);
+    texte.add(boutonTexte); 
+    texte.revalidate();
+    texte.repaint();
+}
 
 void actualiser(){
     actualiserCoteGauche();
@@ -620,6 +664,7 @@ void actualiser(){
     actualiserDefausse();
     actualiserJPanelGrille();
     actualiserLogo();
+    actualiserTexte();
     
 }
 /**
@@ -664,6 +709,7 @@ void actualiser(){
     private javax.swing.JPanel defausseJPanel;
     private javax.swing.JPanel jPanelGrille;
     private javax.swing.JPanel logo;
+    private javax.swing.JPanel texte;
     // End of variables declaration//GEN-END:variables
 
 // Méthode gérant le fond de la JFrame
