@@ -17,6 +17,7 @@ import javax.swing.JButton;
 public class fenetrePrincipale extends javax.swing.JFrame {
     
     Carte carte;
+    Carte carteCliquee;
     Grille grille = new Grille();
     Cellule celluleJouee;
     String joueurJouant;
@@ -71,6 +72,11 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         carteJouee = null;
         joueurJouant = "gauche";
         // -----------------------------Création boutons ---------------------------------------------------------------------
+        // Initialisation defausse
+        carteGraphique bouton_carte = new carteGraphique(defausse.get(0),150,90);
+        defausseJPanel.add(bouton_carte);
+        
+        // Cases
         for (int j=0; j < 5; j++ ) {
             for (int i=0;i<5; i++){
                 int position[] = {j,i};
@@ -82,50 +88,59 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                 ecouteurClick = new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    
+                    //TESTS
+                    //changerDeck();
                     //Action à effectuer lorsque le bouton est cliqué
-                    System.out.println(yCell+""+xCell+" cliqué");
+                    //System.out.println(yCell+""+xCell+" cliqué");
                     int [] deplacement = {yCell,xCell};
                     String stt = grille.grille[yCell][xCell].donneStatut();
                     String fond = grille.grille[yCell][xCell].donneFond();
                     
-                    // Observer
-                    System.out.println(stt);
-                    System.out.println(fond);
-                    
-                    
                     // On vérifie si une carte est en train d'être jouée
-                    //if(carteJouee != null){
-                        //if("eb".equals(stt) || "mb".equals(stt) || "er".equals(stt) || "mr".equals(stt)){
-                            if("gris".equals(fond)){
-                                System.out.println("aigri");
-                                deplacerPion(celluleJouee,deplacement);
-                                grille.toutNormal();
-                                celluleJouee = null;
-                            }
-                            else if("normal".equals(fond)){
-                                System.out.println("considéré normal");
-                                if(celluleJouee == null){
-                                    if("eb".equals(stt) || "mb".equals(stt)){
-                                        if("gauche".equals(joueurJouant)){
-                                            celluleJouee = grille.grille[yCell][xCell];
-                                            griseCasesMv(joueurJouant,carteJouee,grille.grille[xCell][yCell]);
-                                        }
-                                        
+                    if(carteJouee != null){
+                        if("gris".equals(fond)){
+                            
+                            System.out.println("aigri");
+                            deplacerPion(celluleJouee,deplacement);
+                            grille.toutNormal();
+                            celluleJouee = null;
+                            echangerDefausse(joueurJouant,carteJouee);
+                            carteJouee = null;
+                            
+                           //actualiser();
+                            
+                            joueurSuivant();
+                            
+                            
+                               
+                        }
+                        else if("normal".equals(fond)){
+                            System.out.println("considéré normal");
+                            if(celluleJouee == null){
+                                if("eb".equals(stt) || "mb".equals(stt)){
+                                    if("gauche".equals(joueurJouant)){
+                                        celluleJouee = grille.grille[yCell][xCell];
+                                        griseCasesMv(joueurJouant,carteJouee,grille.grille[xCell][yCell]);
                                     }
-                                    else if("er".equals(stt) || "mr".equals(stt)){
-                                        if("droite".equals(joueurJouant)){
-                                            celluleJouee = grille.grille[yCell][xCell];
-                                            griseCasesMv(joueurJouant,carteJouee,grille.grille[xCell][yCell]);
-                                        }
-                                        
+
+                                }
+                                else if("er".equals(stt) || "mr".equals(stt)){
+                                    if("droite".equals(joueurJouant)){
+                                        celluleJouee = grille.grille[yCell][xCell];
+                                        griseCasesMv(joueurJouant,carteJouee,grille.grille[xCell][yCell]);
                                     }
-                                } 
-                             else if("marron".equals(fond)){
-                                grille.toutNormal();
-                                System.out.println("re init");
-                            }
-                           }
+
+                                }
+                            } 
+                        else if("marron".equals(fond)){
+                            grille.toutNormal();
+                            System.out.println("re init");
+                        }
+                    }
+                }
                     repaint();
+                    actualiser();
                     //victoire();
                 }
             };
@@ -144,29 +159,37 @@ public class fenetrePrincipale extends javax.swing.JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if("gauche".equals(joueurJouant));
+                    System.out.println(defausse.get(0).donneNom());
+                    carteJouee = carte;
+                    System.out.println(defausse.get(0).donneNom());
+                    repaint();
+                    //victoire();
+                }
+            };
+            boutonCarte.addActionListener(ecouteurClick);
+            
+            coteGauche.add(boutonCarte);
+        }
+        for (int i=0;i<2;i++){
+            carteGraphique boutonCarte = new carteGraphique(deckJrDroite.get(i),150,90);
+            final Carte carte = deckJrDroite.get(i);
+            ActionListener ecouteurClick;
+            ecouteurClick = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if("droite".equals(joueurJouant));
                     carteJouee = carte;
                     repaint();
                     //victoire();
                 }
             };
             boutonCarte.addActionListener(ecouteurClick);
-            coteGauche.add(boutonCarte);
+            coteDroit.add(boutonCarte);
         }
-        
-        for (int i=0;i<2;i++){
-            carteGraphique bouton_carte = new carteGraphique(deckJrDroite.get(i),150,90);
-            coteDroit.add(bouton_carte);
-        }
-        carteGraphique bouton_carte = new carteGraphique(defausse.get(0),150,90);
-        defausseJPanel.add(bouton_carte);
+
         
         initialiserPartie();
-        //System.out.println("deckTotal"+ deckTotal);
-        //System.out.println("deckJrGauche"+ deckJrGauche);
-        //System.out.println("deckJrDroite"+ deckJrDroite);
-        //griseCasesMv("gauche",deckJrGauche.get(1),grille.grille [2][1]);
-        //int[] coo = {2,4};
-        //deplacerPion(grille.grille[2][0],coo);
+
     }
 
     /**
@@ -281,6 +304,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         // Retourner la valeur de la ligne
         return valeur;
     }
+    
     private static String recupererTexteLigne(String cheminFichier, int numeroLigne) {
         String ligne = null;
 
@@ -351,6 +375,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         }
         return deck;
     }
+    
     ArrayList<Carte> initDefausse(){
         Random random = new Random();
         int n = random.nextInt(deckTotal.size());
@@ -368,6 +393,8 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     // --------------------------------------------------------------------------
     
     void griseCasesMv(String joueur, Carte carte, Cellule cell){
+        System.out.println(deckJrGauche.get(0).donneNom()+deckJrGauche.get(1).donneNom());
+        System.out.println(grille);
         int[][] mouvementsCarte = carte.donneCoups(); // On initialise juste( ça ne sert à rien), la suite est intéressante
         
         if("gauche".equals(joueur)){
@@ -381,13 +408,11 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         int[] zero = {0,0};
         int[][] mouvements = new int[4][2];
         
-        // On combine les déplacements relatifs de la carte et la position de la cellule pour obtenir les deplacements absolus.
         
-        
+        // On combine les déplacements relatifs de la carte et la position de la cellule pour obtenir les deplacements absolus
         for(int i=0;i<4;i++){
-            for (int j=0;j<2;j++){
-            mouvements[i][j] = positionPion[(j+1)%2]+mouvementsCarte[i][j];   
-        }
+            mouvements[i][0] = positionPion[1]+mouvementsCarte[i][0];
+            mouvements[i][1] = positionPion[0]+mouvementsCarte[i][1];   
         }
         // Observer
         String txt = "";
@@ -395,7 +420,6 @@ public class fenetrePrincipale extends javax.swing.JFrame {
             txt = txt+"{";
                 for(int j=0;j<2;j++){
                     txt = txt+" "+mouvementsCarte[i][j];
-                    
                 }
             txt = txt+"}";
         }
@@ -414,15 +438,17 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         //System.out.println(txt);
         
         for(int i=0;i<4;i++){
+            // Observer
+            System.out.println(grille.deplacementLegal(positionPion, mouvements[i]));
+            //---
+            
             if(grille.deplacementLegal(positionPion, mouvements[i]) == false){
                 mouvements[i] = zero;
             }
             if(mouvements[i][0]!=0 || mouvements[i][1]!= 0){
             grille.grille[mouvements[i][0]][mouvements[i][1]].devientGris();
-            //grille.grille[0][2].devientGris();
             }
         }
-        
         grille.grille[positionPion[1]][positionPion[0]].devientMarron();
         repaint();
     }
@@ -453,9 +479,96 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         grille.initialiser();
         repaint();
     }
-    /**
-     * @param args the command line arguments
-     */
+    
+    void echangerDefausse(String joueur, Carte carte) {
+    if ("gauche".equals(joueur)) {
+        deckJrGauche.add(defausse.get(0));
+        deckJrGauche.remove(carte);
+        defausse.remove(0);
+        System.out.println(carte);
+        defausse.add(new Carte(carte.donneNom(), carte.donneNom() + ".jpg", carte.donneCoups()));
+        //defausse.add(carte);
+    } else {
+        deckJrDroite.remove(carte);
+        deckJrDroite.add(defausse.get(0));
+        defausse.remove(0);
+        defausse.add(new Carte(carte.donneNom(), carte.donneNom() + ".jpg", carte.donneCoups()));
+        //defausse.add(carte);
+    }
+
+    actualiserCoteGauche();
+    actualiserCoteDroit();
+    actualiserDefausse();
+}
+    
+    // ---------------------------------------------------------------
+    // -------------POUR REACTUALISER LES COMPOSANTS GRAPHIQUES-------
+    // ---------------------------------------------------------------
+    
+    
+void actualiserDefausse(){
+        // Actualiser le composant graphique pour la défausse
+    defausseJPanel.removeAll();
+    carteGraphique bouton_carte = new carteGraphique(defausse.get(0), 150, 90);
+    defausseJPanel.add(bouton_carte);
+
+    // Mettre à jour l'interface graphique
+    defausseJPanel.revalidate();
+    defausseJPanel.repaint();
+    }
+    
+ void actualiserCoteGauche() {
+    // Actualiser le composant graphique pour le deck du joueur gauche
+    coteGauche.removeAll();
+    for (int i = 0; i < 2; i++) {
+        carteGraphique boutonCarte = new carteGraphique(deckJrGauche.get(i), 150, 90);
+        final Carte carte = deckJrGauche.get(i);
+        ActionListener ecouteurClick = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if ("gauche".equals(joueurJouant)) ;
+                carteJouee = carte;
+            }
+        };
+        boutonCarte.addActionListener(ecouteurClick);
+        coteGauche.add(boutonCarte);
+    }
+
+    // Mettre à jour l'interface graphique
+    coteGauche.revalidate();
+    coteGauche.repaint();
+}
+
+void actualiserCoteDroit() {
+    // Actualiser le composant graphique pour le deck du joueur droit
+    coteDroit.removeAll();
+    for (int i = 0; i < 2; i++) {
+        carteGraphique boutonCarte = new carteGraphique(deckJrDroite.get(i), 150, 90);
+        final Carte carte = deckJrDroite.get(i);
+        ActionListener ecouteurClick = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if ("droite".equals(joueurJouant)) ;
+                carteJouee = carte;
+            }
+        };
+        boutonCarte.addActionListener(ecouteurClick);
+        coteDroit.add(boutonCarte);
+    }
+
+    // Mettre à jour l'interface graphique
+    coteDroit.revalidate();
+    coteDroit.repaint();
+}
+
+void actualiser(){
+    actualiserCoteGauche();
+    actualiserCoteDroit();
+    actualiserDefausse();
+}
+/**
+ * @param args the command line arguments
+ */
     
     
     
