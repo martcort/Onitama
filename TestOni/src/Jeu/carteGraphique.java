@@ -25,7 +25,8 @@ public class carteGraphique extends JButton{
         this.carteAssociee = carte;
         this.largeur = l;
         this.hauteur = h;
-        this.image = carte.donneNom();
+        this.image = carteAssociee.donneNom();
+        System.out.println(carteAssociee.donneNom());
         setSize(largeur, hauteur);
     }
     
@@ -40,7 +41,7 @@ public class carteGraphique extends JButton{
     
     // Dessin de l'image dans le composant
     if (imageADessiner != null) {
-    System.out.println("ok");
+    //System.out.println("ok");
     g.drawImage(imageADessiner,0,0,300,180,this);
 }
 }

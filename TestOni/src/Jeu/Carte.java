@@ -22,11 +22,10 @@ public class Carte {
         nom = name;
         image = im;
         
-        
+        // On définit coups
         for (int i=0;i<4;i++){
             tab[i][0] = -tab[i][0];
         }
-        
         String txt = "";
         for(int i=0;i<4;i++){
             for (int j=0;j<2;j++){
@@ -36,8 +35,45 @@ public class Carte {
         }
         System.out.println(txt);
         coups = tab;
+        
+        // On définit coupsGauche (adapté au référentiel)
+        int[][] tabG = new int[4][2];
+        for(int i=0;i<4;i++){
+            for(int j=0;j<2;j++){
+                tabG[i][j] = tab[i][j];
+            }
+        }
+        
+        for(int i=0;i<4;i++){
+            int n = tabG[i][0];
+            tabG[i][0] = tabG[i][1];
+            tabG[i][1] = -n;
+        }
+        coupsGauche = tabG;
+        
+        
+        // On définit coupsGauche (adapté au référentiel)
+        int[][] tabD = new int[4][2];
+        for(int i=0;i<4;i++){
+            for(int j=0;j<2;j++){
+                tabD[i][j] = tab[i][j];
+            }
+        }
+        
+        for(int i=0;i<4;i++){
+            int n = tabD[i][0];
+            tabD[i][0] = -tabD[i][1];
+            tabD[i][1] = n;
+        }
+        coupsDroite = tabD;
+        
+        
+        
         }
        
+        
+        
+    
     
     //Méthodes d'information
     String donneNom(){
@@ -83,8 +119,7 @@ public class Carte {
             }
             txt = txt+"}";
         }
-        // Observer
-        txt = txt + "//";
+        txt =txt + "// ";
         for(int i=0;i<4;i++){
             txt = txt+"{";
             for(int j=0;j<2;j++){
@@ -92,7 +127,6 @@ public class Carte {
             }
             txt = txt+"}";
         }
-        // ---
         return txt;
         
     }

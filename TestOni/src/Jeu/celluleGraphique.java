@@ -18,12 +18,22 @@ public class celluleGraphique extends JButton{
     Cellule celluleAssociee;
     int largeur;
     int hauteur;
+    int[] position;
     
     public celluleGraphique(Cellule cell, int l, int h){
         this.celluleAssociee = cell;
         this.largeur = l;
         this.hauteur = h;
+        this.position = celluleAssociee.donnePosition();
         setSize(largeur, hauteur);
+        
+        
+        
+        
+    }
+    // Infos
+    int[] donnePosition(){
+        return position;
     }
     
     // Méthode gérant le dessin de la cellule
@@ -33,6 +43,9 @@ public class celluleGraphique extends JButton{
     Image backgroundImage = null;
     if("gris".equals(celluleAssociee.donneFond())){
         backgroundImage = new ImageIcon("src/Jeu/images/fond_gris.png").getImage();
+    }
+    else if("marron".equals(celluleAssociee.donneFond())){
+        backgroundImage = new ImageIcon("src/Jeu/images/fond_marron.png").getImage();
     }
     else{
         backgroundImage = new ImageIcon("src/Jeu/images/fond.png").getImage();
@@ -56,9 +69,9 @@ public class celluleGraphique extends JButton{
     
     // Dessin de l'image dans le composant
     if (imageADessiner != null) {
-    System.out.println("ok");
-    g.drawImage(backgroundImage,0,0,100,100,this);
-    g.drawImage(imageADessiner, 0, 0,100,100, this);
+    //System.out.println("ok");
+    g.drawImage(backgroundImage,0,0,largeur,hauteur,this);
+    g.drawImage(imageADessiner, 0, 0,largeur,hauteur, this);
 }
 }
 }
