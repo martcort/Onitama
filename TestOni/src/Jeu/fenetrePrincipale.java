@@ -28,6 +28,8 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     Carte carteJouee;
     
     
+    
+    
     ArrayList<Carte> deckTotal;
     ArrayList<Carte> deckJrGauche;
     ArrayList<Carte> deckJrDroite;
