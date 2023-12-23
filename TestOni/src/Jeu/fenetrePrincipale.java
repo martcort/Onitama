@@ -1,6 +1,8 @@
 package Jeu;
 
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -8,7 +10,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -40,6 +44,9 @@ public class fenetrePrincipale extends javax.swing.JFrame {
     public fenetrePrincipale() {
         initComponents();
         // Initialisation des variables
+        // Positionnement des JButton
+        getContentPane().add(logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40,
+        266, 113));
         
         getContentPane().add(coteGauche, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250,
         largeurCarte, hauteurCarte*2));
@@ -62,6 +69,8 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         coteDroit.setLayout( new GridLayout(2,1));
         coteGauche.setLayout( new GridLayout(2,1));
         defausseJPanel.setLayout( new GridLayout(1,1));
+        logo.setLayout( new GridLayout(1,1));
+        
         // -----------------------------Initialisation deck et défausse-------------------------------------------------------
         deckTotal = creerDeckTotal();
         deckJrGauche = initDeckJr();
@@ -76,7 +85,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         carteGraphique bouton_carte = new carteGraphique(defausse.get(0),150,90);
         defausseJPanel.add(bouton_carte);
         
-        // Cases
+        // Création des bouton Cases et des actions à effectuer
         for (int j=0; j < 5; j++ ) {
             for (int i=0;i<5; i++){
                 int position[] = {j,i};
@@ -150,7 +159,8 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         }
         
         
-        
+        // Création des boutons Cartes et des actions à effectuer
+        //Cartes de gauche
         for (int i=0;i<2;i++){
             carteGraphique boutonCarte = new carteGraphique(deckJrGauche.get(i),150,90);
             final Carte carte = deckJrGauche.get(i);
@@ -170,6 +180,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
             
             coteGauche.add(boutonCarte);
         }
+        // Cartes de droite
         for (int i=0;i<2;i++){
             carteGraphique boutonCarte = new carteGraphique(deckJrDroite.get(i),150,90);
             final Carte carte = deckJrDroite.get(i);
@@ -186,7 +197,26 @@ public class fenetrePrincipale extends javax.swing.JFrame {
             boutonCarte.addActionListener(ecouteurClick);
             coteDroit.add(boutonCarte);
         }
+        
+        
+        // Création du logo
+        logo boutonLogo = new logo();
+            /**
+            ActionListener ecouteurClick;
+            ecouteurClick = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if("droite".equals(joueurJouant));
+                    carteJouee = carte;
+                    repaint();
+                    //victoire();
+                }
+            };
+            boutonCarte.addActionListener(ecouteurClick);
+            ***/
+            //boutonLogo.setContentAreaFilled(false);
 
+            logo.add(boutonLogo);
         
         initialiserPartie();
 
@@ -205,6 +235,7 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         coteDroit = new javax.swing.JPanel();
         coteGauche = new javax.swing.JPanel();
         defausseJPanel = new javax.swing.JPanel();
+        logo = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -266,6 +297,19 @@ public class fenetrePrincipale extends javax.swing.JFrame {
         );
 
         getContentPane().add(defausseJPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 20, 200, 120));
+
+        javax.swing.GroupLayout logoLayout = new javax.swing.GroupLayout(logo);
+        logo.setLayout(logoLayout);
+        logoLayout.setHorizontalGroup(
+            logoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        logoLayout.setVerticalGroup(
+            logoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -561,10 +605,22 @@ void actualiserCoteDroit() {
     coteDroit.repaint();
 }
 
+void actualiserJPanelGrille(){
+    jPanelGrille.revalidate();
+    jPanelGrille.repaint();
+}
+void actualiserLogo(){
+    logo.revalidate();
+    logo.repaint();
+}
+
 void actualiser(){
     actualiserCoteGauche();
     actualiserCoteDroit();
     actualiserDefausse();
+    actualiserJPanelGrille();
+    actualiserLogo();
+    
 }
 /**
  * @param args the command line arguments
@@ -607,5 +663,21 @@ void actualiser(){
     private javax.swing.JPanel coteGauche;
     private javax.swing.JPanel defausseJPanel;
     private javax.swing.JPanel jPanelGrille;
+    private javax.swing.JPanel logo;
     // End of variables declaration//GEN-END:variables
+
+// Méthode gérant le fond de la JFrame
+    @Override
+    public void paint(Graphics g) {
+    Image imageADessiner = null;
+            
+    imageADessiner = new ImageIcon("src/Jeu/images/vague.jpg").getImage();
+    super.paint(g);
+    // Dessin de l'image dans le composant
+    if (imageADessiner != null) {
+        //System.out.println("ok");
+        g.drawImage(imageADessiner,0,0,getWidth(),getHeight(),this);
+    }
+    actualiser();
+}
 }
